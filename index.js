@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
 const multer = require('multer');
 const { BlobServiceClient, generateBlobSASQueryParameters, BlobSASPermissions, StorageSharedKeyCredential } = require('@azure/storage-blob');
 const sql = require('mssql');
@@ -10,25 +9,11 @@ const jwt = require('jsonwebtoken');
 
 const app = express();
 
-// Configure CORS to allow requests from Vercel frontend
-const corsOptions = {
-  origin: true, // Allow all origins for now
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept']
-};
-
-app.use(cors(corsOptions));
-app.use(express.json());
-
-// Handle preflight requests
-app.options('*', cors(corsOptions));
-
-// Add CORS headers manually as backup
+// Disable CORS entirely - allow all requests
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Methods', '*');
+  res.header('Access-Control-Allow-Headers', '*');
   
   if (req.method === 'OPTIONS') {
     res.sendStatus(200);
@@ -36,6 +21,8 @@ app.use((req, res, next) => {
     next();
   }
 });
+
+app.use(express.json());
 
 // Health check endpoint
 app.get('/health', (req, res) => {
