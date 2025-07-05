@@ -385,6 +385,19 @@ app.delete('/clients', authenticateToken, async (req, res) => {
   }
 });
 
+// Test endpoint to verify service is working
+app.get('/test', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+  res.json({ 
+    message: 'Service is working!', 
+    timestamp: new Date().toISOString(),
+    cors: 'enabled'
+  });
+});
+
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
