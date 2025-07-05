@@ -8,7 +8,7 @@
     "dev": "nodemon index.js"
   },
   "engines": {
-    "node": "18.x"
+    "node": ">=18.x"
   },
   "keywords": ["insurance", "client-management", "azure"],
   "author": "Your Name",
@@ -17,7 +17,6 @@
   "dependencies": {
     "@azure/storage-blob": "^12.17.0",
     "bcrypt": "^5.1.1",
-    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
