@@ -9,8 +9,24 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-app.use(cors());
+
+// Configure CORS to allow requests from Vercel frontend
+const corsOptions = {
+  origin: [
+    'https://insuremelk-frontend-uq6p.vercel.app',
+    'http://localhost:3000', // For local development
+    'http://localhost:3001'  // Alternative local port
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
+
+// Handle preflight requests
+app.options('*', cors(corsOptions));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
