@@ -1,0 +1,49 @@
+apiVersion: wso2.com/v1alpha1
+kind: Component
+metadata:
+  name: insureme-backend
+spec:
+  type: web
+  build:
+    language: nodejs
+    languageVersion: 18
+    source:
+      repository: https://github.com/your-username/insureme-backend.git
+      branch: main
+      context: backend
+  runtime:
+    language: nodejs
+    languageVersion: 18
+    resources:
+      memory: 512Mi
+      cpu: 0.5
+  ports:
+    - containerPort: 5000
+      protocol: TCP
+  env:
+    - name: SQL_USER
+      value: "sqladmin"
+    - name: SQL_PASSWORD
+      value: "YourStrongPassword123!"
+    - name: SQL_DATABASE
+      value: "insureme-db"
+    - name: SQL_SERVER
+      value: "insureme-server.database.windows.net"
+    - name: AZURE_STORAGE_CONNECTION_STRING
+      value: "DefaultEndpointsProtocol=https;AccountName=insuremestorage;AccountKey=YOUR_STORAGE_KEY;EndpointSuffix=core.windows.net"
+    - name: AZURE_BLOB_CONTAINER
+      value: "client-documents"
+    - name: AZURE_STORAGE_ACCOUNT_NAME
+      value: "insuremestorage"
+    - name: AZURE_STORAGE_ACCOUNT_KEY
+      value: "YOUR_STORAGE_KEY"
+    - name: JWT_SECRET
+      value: "your-super-secret-jwt-key-change-this-in-production"
+    - name: NODE_ENV
+      value: "production"
+  healthCheck:
+    httpGet:
+      path: /health
+      port: 5000
+    initialDelaySeconds: 30
+    periodSeconds: 10 
