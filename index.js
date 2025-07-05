@@ -11,15 +11,19 @@ const app = express();
 
 // Disable CORS entirely - allow all requests
 app.use((req, res, next) => {
+  // Add CORS headers to ALL responses
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', '*');
-  res.header('Access-Control-Allow-Headers', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
   
+  // Handle preflight requests
   if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
+    res.status(200).end();
+    return;
   }
+  
+  next();
 });
 
 app.use(express.json());
@@ -52,6 +56,11 @@ const upload = multer({ dest: 'uploads/' });
 
 // Login endpoint
 app.post('/login', async (req, res) => {
+  // Add CORS headers specifically for login
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
   try {
     const { username, password } = req.body;
     
@@ -97,12 +106,6 @@ app.post('/login', async (req, res) => {
       res.status(500).json({ error: 'Database connection failed. Please try again.' });
     } else {
       res.status(500).json({ error: 'Login failed. Please try again.' });
-    }
-  } finally {
-    try {
-      await sql.close();
-    } catch (e) {
-      // Ignore close errors
     }
   }
 });
