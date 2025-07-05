@@ -12,14 +12,10 @@ const app = express();
 
 // Configure CORS to allow requests from Vercel frontend
 const corsOptions = {
-  origin: [
-    'https://insuremelk-frontend-uq6p.vercel.app',
-    'http://localhost:3000', // For local development
-    'http://localhost:3001'  // Alternative local port
-  ],
+  origin: true, // Allow all origins for now
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept']
 };
 
 app.use(cors(corsOptions));
@@ -27,6 +23,19 @@ app.use(express.json());
 
 // Handle preflight requests
 app.options('*', cors(corsOptions));
+
+// Add CORS headers manually as backup
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
 
 // Health check endpoint
 app.get('/health', (req, res) => {
